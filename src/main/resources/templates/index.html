@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>测试数据展示</title>
+		<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"> 
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script>
+			$(document).ready(function () {
+
+				findAll();
+				$("#add").click(function () {
+					var id = $("input[name='addId']").val();
+					var name = $("input[name='addName']").val();
+					var age = $("input[name='addAge']").val();
+					var gender = $("input[name='addGender']:checked").val();
+					$.ajax({
+						url: "/test/add",
+						type: "post",
+						dataType: "text",
+						data: JSON.stringify({"id": id, "name": name, "age": age, "gender": gender}),
+						headers: {
+							"Content-Type": "application/json; charset=utf-8"
+						},
+						success: function (data) {
+							alert(data);
+							findAll();
+						}
+					});
+				});
+				function findAll() {
+					$.get("/test/findAll", {}, function (data) {
+						var body = "";
+						for (var i = 0; i < data.length; i++) {
+							var find = data[i];
+							body += "<tr>" +
+								"<td><input  type='checkbox'/></td>" +
+								"<td>" + find.id + "</td>" +
+								"<td>" + find.name + "</td>" +
+								"<td>" + find.age + "</td>" +
+								"<td>" + find.gender + "</td>" +
+								"</tr>";
+						}
+						$("#tbody").html(body);
+					});
+				}
+			});
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<center><h3>测试数据展示</h3></center>
+		</div>
+		<div>
+			<center>
+				ID:<input type="text" name="addId" />
+				姓名:<input type="text" name="addName" />
+				年龄:<input type="text" name="addAge" />
+				性别: 男<input type="radio" name="addGender" value="1"/>
+				女<input type="radio" name="addGender" value="2"/>
+				<button type="button" title="添加" id="add">添加</button>
+			</center>
+		</div>
+		<div>
+			<div>
+				<table border="1" style="margin: auto" width='60%'>
+					<thead>
+						<tr>
+							<th style="padding-right:0px">
+								<input type="checkbox"/>
+							</th> 
+							<th>ID</th>
+							<th>名字</th>									      
+							<th>年龄</th>
+							<th>性别</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>
